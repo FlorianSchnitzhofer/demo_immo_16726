@@ -73,7 +73,7 @@ function RentChart({ points }: { points: MonthPoint[] }) {
               {p.paid > 0 && (
                 <path
                   d={topRoundedBar(x2, y(p.paid), barW, m.top + plotH - y(p.paid), 3)}
-                  fill="#171717"
+                  fill="#107c10"
                 />
               )}
               <text x={cx} y={H - 8} textAnchor="middle" fontSize="11.5" fill="#605e5c">
@@ -129,7 +129,7 @@ function OccupancyBar({ rented, total }: { rented: number; total: number }) {
         <div
           style={{
             width: `${pct}%`,
-            background: '#171717',
+            background: '#107c10',
             color: '#fff',
             fontSize: 12,
             fontWeight: 600,
@@ -241,7 +241,7 @@ export default function Dashboard() {
                 Vorgeschrieben
               </span>
               <span>
-                <span className="chip" style={{ background: '#171717' }} />
+                <span className="chip" style={{ background: '#107c10' }} />
                 Bezahlt
               </span>
             </span>
@@ -254,7 +254,7 @@ export default function Dashboard() {
           <OccupancyBar rented={rented} total={data.unit_count} />
           <div className="legend" style={{ marginTop: 8 }}>
             <span>
-              <span className="chip" style={{ background: '#171717' }} />
+              <span className="chip" style={{ background: '#107c10' }} />
               Vermietet
             </span>
             <span>

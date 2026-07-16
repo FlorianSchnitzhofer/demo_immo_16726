@@ -159,7 +159,7 @@ export default function PropertyDetail() {
                   <td className="num">{u.rooms ?? '–'}</td>
                   <td className="num">{num(u.area_m2)} m²</td>
                   <td>
-                    {u.tenancy_id ? <Badge variant="ok">Vermietet</Badge> : <Badge variant="solid">Leerstand</Badge>}
+                    {u.tenancy_id ? <Badge variant="ok">Vermietet</Badge> : <Badge variant="alert">Leerstand</Badge>}
                   </td>
                   <td>{u.tenant_name ?? <span className="muted">–</span>}</td>
                   <td className="num">{u.tenancy_id ? eur(u.net_rent) : '–'}</td>

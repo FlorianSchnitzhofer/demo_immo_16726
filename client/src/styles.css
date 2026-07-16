@@ -1,4 +1,4 @@
-/* Tech2Be Immo Manager — Fluent-inspiriertes Schwarz-Weiß-Design */
+/* Tech2Be Immo Manager — Fluent-inspiriertes Design, Highlight-Farbe Grün */
 
 :root {
   --bg: #faf9f8;
@@ -8,8 +8,10 @@
   --ink-muted: #8a8886;
   --border: #edebe9;
   --border-strong: #c8c6c4;
-  --accent: #000000;
-  --accent-hover: #292827;
+  --accent: #107c10;
+  --accent-hover: #0c5e0c;
+  --accent-soft: #e7f2e7;
+  --accent-ink: #0b5a0b;
   --shadow: 0 1.6px 3.6px rgba(0, 0, 0, 0.1), 0 0.3px 0.9px rgba(0, 0, 0, 0.07);
   --shadow-lg: 0 6.4px 14.4px rgba(0, 0, 0, 0.13), 0 1.2px 3.6px rgba(0, 0, 0, 0.1);
   --radius: 4px;
@@ -85,7 +87,7 @@ body {
   height: 30px;
   border-radius: 50%;
   background: #fff;
-  color: #000;
+  color: var(--accent-ink);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -126,7 +128,7 @@ body {
 
 .sidebar a.active {
   border-left-color: var(--accent);
-  background: #f3f2f1;
+  background: var(--accent-soft);
   font-weight: 600;
 }
 
@@ -385,7 +387,7 @@ textarea:focus {
 }
 
 .badge.solid {
-  background: var(--ink);
+  background: var(--accent);
   color: #fff;
 }
 
@@ -398,6 +400,11 @@ textarea:focus {
 .badge.soft {
   background: #edebe9;
   color: var(--ink);
+}
+
+.badge.soft.ok {
+  background: var(--accent-soft);
+  color: var(--accent-ink);
 }
 
 .badge.alert {
@@ -445,8 +452,8 @@ textarea:focus {
 }
 
 .status-step.done .status-dot {
-  background: var(--ink);
-  border-color: var(--ink);
+  background: var(--accent);
+  border-color: var(--accent);
 }
 
 .status-step .status-label {
@@ -469,7 +476,7 @@ textarea:focus {
 
 .status-step.done + .status-step .status-connector,
 .status-connector.done {
-  background: var(--ink);
+  background: var(--accent);
 }
 
 /* ---------- Diverses ---------- */

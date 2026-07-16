@@ -243,7 +243,7 @@ export default function OperatingCosts() {
                           {t.saldo >= 0 ? (
                             <Badge variant="ok">Guthaben</Badge>
                           ) : (
-                            <Badge variant="solid">Nachzahlung</Badge>
+                            <Badge variant="alert">Nachzahlung</Badge>
                           )}
                         </td>
                       </tr>

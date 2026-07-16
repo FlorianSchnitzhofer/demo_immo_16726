@@ -111,7 +111,7 @@ export default function Properties() {
                     <td className="num">{num(p.total_area)} m²</td>
                     <td>
                       {p.vacant_count ? (
-                        <Badge variant="solid">{p.vacant_count} Einheit(en) leer</Badge>
+                        <Badge variant="alert">{p.vacant_count} Einheit(en) leer</Badge>
                       ) : (
                         <Badge variant="ok">Voll vermietet</Badge>
                       )}
