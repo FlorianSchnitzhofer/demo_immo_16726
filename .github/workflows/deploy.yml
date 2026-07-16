@@ -28,42 +28,58 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      # Transiente Verbindungsabbrueche (Connection reset) mit Wiederholungen abfangen
       - name: Build image in ACR
         run: |
-          az acr build \
-            --registry $REGISTRY \
-            --image $IMAGE:${{ github.sha }} \
-            --image $IMAGE:latest \
-            .
+          for i in 1 2 3 4 5; do
+            if az acr build \
+              --registry $REGISTRY \
+              --image $IMAGE:${{ github.sha }} \
+              --image $IMAGE:latest \
+              .; then
+              exit 0
+            fi
+            echo "Build-Versuch $i fehlgeschlagen, neuer Versuch in 15 s ..."
+            sleep 15
+          done
+          echo "Build nach 5 Versuchen fehlgeschlagen" && exit 1
 
       - name: Create or update Container App
         run: |
-          if az containerapp show --name $APP_NAME --resource-group $RESOURCE_GROUP -o none 2>/dev/null; then
-            echo "App existiert – Image wird aktualisiert."
-            az containerapp update \
-              --name $APP_NAME \
-              --resource-group $RESOURCE_GROUP \
-              --image $REGISTRY.azurecr.io/$IMAGE:${{ github.sha }}
-          else
-            echo "App wird neu angelegt."
-            ACR_PASSWORD=$(az acr credential show -n $REGISTRY --query "passwords[0].value" -o tsv)
-            az containerapp create \
-              --name $APP_NAME \
-              --resource-group $RESOURCE_GROUP \
-              --environment $APP_ENVIRONMENT \
-              --image $REGISTRY.azurecr.io/$IMAGE:${{ github.sha }} \
-              --registry-server $REGISTRY.azurecr.io \
-              --registry-username $REGISTRY \
-              --registry-password "$ACR_PASSWORD" \
-              --target-port 8080 \
-              --ingress external \
-              --min-replicas 1 \
-              --max-replicas 1 \
-              --cpu 0.5 \
-              --memory 1.0Gi \
-              --secrets "database-url=${{ secrets.DATABASE_URL }}" \
-              --env-vars "DATABASE_URL=secretref:database-url" "PGSSL=require" "AUTO_LOGIN_USER=florian@bingro.com"
-          fi
+          deploy() {
+            if az containerapp show --name $APP_NAME --resource-group $RESOURCE_GROUP -o none 2>/dev/null; then
+              echo "App existiert – Image wird aktualisiert."
+              az containerapp update \
+                --name $APP_NAME \
+                --resource-group $RESOURCE_GROUP \
+                --image $REGISTRY.azurecr.io/$IMAGE:${{ github.sha }}
+            else
+              echo "App wird neu angelegt."
+              ACR_PASSWORD=$(az acr credential show -n $REGISTRY --query "passwords[0].value" -o tsv) || return 1
+              az containerapp create \
+                --name $APP_NAME \
+                --resource-group $RESOURCE_GROUP \
+                --environment $APP_ENVIRONMENT \
+                --image $REGISTRY.azurecr.io/$IMAGE:${{ github.sha }} \
+                --registry-server $REGISTRY.azurecr.io \
+                --registry-username $REGISTRY \
+                --registry-password "$ACR_PASSWORD" \
+                --target-port 8080 \
+                --ingress external \
+                --min-replicas 1 \
+                --max-replicas 1 \
+                --cpu 0.5 \
+                --memory 1.0Gi \
+                --secrets "database-url=${{ secrets.DATABASE_URL }}" \
+                --env-vars "DATABASE_URL=secretref:database-url" "PGSSL=require" "AUTO_LOGIN_USER=florian@bingro.com"
+            fi
+          }
+          for i in 1 2 3; do
+            if deploy; then exit 0; fi
+            echo "Deploy-Versuch $i fehlgeschlagen, neuer Versuch in 20 s ..."
+            sleep 20
+          done
+          echo "Deployment nach 3 Versuchen fehlgeschlagen" && exit 1
 
       - name: Smoke test
         run: |
